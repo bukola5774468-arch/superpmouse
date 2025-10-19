@@ -9,7 +9,34 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 <body>
-    <div class="container">
+    <!-- Password Protection Screen -->
+    <div id="passwordOverlay" class="password-overlay">
+        <div class="animated-background">
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+            <div class="crypto-particle"></div>
+        </div>
+        <div class="password-container">
+            <div class="lock-icon">🔐</div>
+            <h1 class="password-title">Secure Access</h1>
+            <p class="password-subtitle">Enter password to access dashboard</p>
+            <div class="password-input-group">
+                <input type="password" id="passwordInput" placeholder="Enter Password" autocomplete="off">
+                <button id="passwordSubmit">Unlock</button>
+            </div>
+            <div id="passwordError" class="password-error"></div>
+            <div class="security-badge">
+                <span>🛡️ Protected by encryption</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent">
         <header>
             <h1>TO THE MOON</h1>
             <div class="last-update">Last updated: <span id="lastUpdate">--</span></div>
@@ -182,6 +209,7 @@
         </div>
     </div>
 
+    <script src="password.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
