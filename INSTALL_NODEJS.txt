@@ -1,0 +1,59 @@
+============================================
+   How to Install Node.js (Easy!)
+============================================
+
+Your system doesn't have Python or Node.js installed yet.
+Here's how to fix it in 2 minutes:
+
+OPTION 1: Install Node.js (RECOMMENDED)
+----------------------------------------
+
+1. Go to: https://nodejs.org/
+
+2. Download the "LTS" version (recommended for most users)
+   - Click the big green button
+
+3. Run the installer
+   - Click "Next" through all the steps
+   - Accept the defaults
+
+4. Restart your computer
+
+5. Double-click START_DASHBOARD.bat again
+   - It will now work!
+
+
+OPTION 2: Try Opening Directly (May Not Work)
+----------------------------------------------
+
+Double-click: OPEN_DASHBOARD.bat
+
+This opens the HTML file directly in your browser.
+However, some browsers block API calls from local files.
+
+If prices show "$--" or blank:
+- You MUST install Node.js (Option 1 above)
+
+
+WHY DO I NEED THIS?
+--------------------
+
+Modern browsers block API calls from local HTML files
+for security reasons (called "CORS policy").
+
+Running a local server (with Node.js or Python) fixes this.
+
+
+QUICK TEST:
+-----------
+
+After installing Node.js, open Command Prompt and type:
+    node --version
+
+If you see a version number (like v20.11.0), it worked!
+
+
+============================================
+Need help? Check TROUBLESHOOTING.md
+============================================
+

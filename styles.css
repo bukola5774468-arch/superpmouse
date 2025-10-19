@@ -1,0 +1,683 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.last-update {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Wallet Section */
+.wallet-section {
+    margin-bottom: 30px;
+}
+
+.wallet-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.wallet-card:hover {
+    transform: translateY(-5px);
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.wallet-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.wallet-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+/* Moon Task Calculator - Circular Design */
+.moon-task-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.moon-task-header h2 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.moon-task-badge {
+    background: white;
+    color: #667eea;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.moon-task-circles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.moon-circle {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.moon-circle-inner {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    position: relative;
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.moon-circle-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+    z-index: 0;
+}
+
+.moon-circle:hover .moon-circle-inner {
+    transform: scale(1.05);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+}
+
+.moon-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 15px;
+    z-index: 1;
+    text-align: center;
+}
+
+.moon-circle input {
+    width: 100%;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    border: none;
+    background: transparent;
+    outline: none;
+    z-index: 1;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.moon-circle input:focus {
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.05);
+}
+
+.moon-circle input::placeholder {
+    color: #ccc;
+    font-weight: 600;
+}
+
+.moon-unit {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #999;
+    margin-top: 10px;
+    z-index: 1;
+}
+
+/* Result Circle - Special Styling */
+.moon-circle-result .moon-circle-inner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.moon-circle-result .moon-label {
+    color: white;
+    font-size: 1.1rem;
+}
+
+.moon-result {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    z-index: 1;
+    text-align: center;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.moon-result.flash {
+    animation: resultFlash 0.5s ease;
+}
+
+@keyframes resultFlash {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+}
+
+.moon-circle-result .moon-unit {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+/* Live Rate Circle - Special Styling */
+.moon-circle-live .moon-circle-inner {
+    background: linear-gradient(135deg, #F3BA2F 0%, #F59E0B 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.moon-circle-live .moon-label {
+    color: white;
+    font-size: 1.1rem;
+}
+
+.moon-arrow {
+    font-size: 2rem;
+    color: white;
+    margin: 10px 0;
+    z-index: 1;
+    animation: rotateArrow 3s ease-in-out infinite;
+}
+
+@keyframes rotateArrow {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+}
+
+.moon-circle-live .moon-result {
+    font-size: 2rem;
+    color: white;
+}
+
+.moon-unit-small {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 10px;
+    z-index: 1;
+    letter-spacing: 1px;
+}
+
+/* Profit/Loss Circle - Dynamic Styling */
+.moon-circle-profit .moon-circle-inner {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.moon-circle-profit.negative .moon-circle-inner {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+}
+
+.moon-circle-profit .moon-label {
+    color: white;
+    font-size: 1.1rem;
+}
+
+.moon-circle-profit .moon-result {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.moon-circle-profit .moon-unit {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+/* Remove spinner arrows from number inputs */
+.moon-circle input[type="number"]::-webkit-inner-spin-button,
+.moon-circle input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.moon-circle input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.wallet-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.total-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Price Section */
+.price-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.section-header h2 {
+    font-size: 1.8rem;
+}
+
+.refresh-btn {
+    background: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.refresh-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.refresh-btn:active {
+    transform: scale(0.95);
+}
+
+/* Price Cards */
+.price-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.price-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.price-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.crypto-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.crypto-symbol {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.crypto-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.crypto-logo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.crypto-info h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.crypto-code {
+    font-size: 0.9rem;
+    color: #999;
+    font-weight: 600;
+}
+
+.price-change {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.price-change.positive {
+    background: #d4edda;
+    color: #155724;
+}
+
+.price-change.negative {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.card-body {
+    margin-bottom: 20px;
+}
+
+.current-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+@keyframes priceUpdate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Price change animations */
+.current-price.price-up {
+    animation: flashGreen 1s ease;
+}
+
+.current-price.price-down {
+    animation: flashRed 1s ease;
+}
+
+@keyframes flashGreen {
+    0%, 100% {
+        background: transparent;
+        color: #333;
+    }
+    50% {
+        background: #d4edda;
+        color: #155724;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes flashRed {
+    0%, 100% {
+        background: transparent;
+        color: #333;
+    }
+    50% {
+        background: #f8d7da;
+        color: #721c24;
+        transform: scale(1.08);
+    }
+}
+
+.price-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-item .label {
+    font-size: 0.8rem;
+    color: #999;
+    font-weight: 600;
+}
+
+.detail-item .value {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Mini Chart - 24h View */
+.mini-chart {
+    height: 100px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+    position: relative;
+}
+
+.mini-chart::before {
+    content: '24h Chart';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    font-size: 0.7rem;
+    color: #999;
+    font-weight: 600;
+}
+
+.mini-chart canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Status Indicator */
+.status-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    z-index: 1000;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffc107;
+    animation: blink 1.5s infinite;
+}
+
+.status-indicator.connected .status-dot {
+    background: #28a745;
+    animation: livePulse 2s infinite;
+}
+
+.status-indicator.error .status-dot {
+    background: #dc3545;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 8px rgba(40, 167, 69, 0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .price-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .price-details {
+        grid-template-columns: 1fr;
+    }
+
+    .wallet-total {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .moon-task-circles {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .moon-circle-inner {
+        padding: 20px 15px;
+    }
+
+    .moon-circle input {
+        font-size: 1.5rem;
+    }
+
+    .moon-result {
+        font-size: 2rem;
+    }
+
+    .moon-arrow {
+        font-size: 1.5rem;
+    }
+}
+

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trading Dashboard - Real-Time</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- CORS-enabled meta tags -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TO THE MOON</h1>
+            <div class="last-update">Last updated: <span id="lastUpdate">--</span></div>
+        </header>
+
+        <!-- Moon Task Section -->
+        <section class="wallet-section">
+            <div class="moon-task-circles">
+                <!-- ETH Balance Circle -->
+                <div class="moon-circle">
+                    <div class="moon-circle-inner">
+                        <div class="moon-label">ETH Balance</div>
+                        <input type="number" id="ethBalance" placeholder="0.00" step="0.01" min="0">
+                        <div class="moon-unit">Used for Trade</div>
+                    </div>
+                </div>
+                
+                <!-- Last Rate Circle (Manual Input) -->
+                <div class="moon-circle">
+                    <div class="moon-circle-inner">
+                        <div class="moon-label">Last Rate</div>
+                        <input type="number" id="lastRate" placeholder="0.0000" step="0.0001" min="0">
+                        <div class="moon-unit">Trade Rate</div>
+                    </div>
+                </div>
+                
+                <!-- Live ETH/BNB Rate Circle -->
+                <div class="moon-circle moon-circle-live">
+                    <div class="moon-circle-inner">
+                        <div class="moon-label">Live Rate</div>
+                        <div class="moon-arrow">⇄</div>
+                        <div class="moon-result" id="liveRate">--</div>
+                        <div class="moon-unit-small">ETH/BNB NOW</div>
+                    </div>
+                </div>
+                
+                <!-- Profit/Loss Circle -->
+                <div class="moon-circle moon-circle-profit">
+                    <div class="moon-circle-inner">
+                        <div class="moon-label">Profit/Loss</div>
+                        <div class="moon-result" id="profitLoss">0.00</div>
+                        <div class="moon-unit">ETH</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Price Cards Section -->
+        <section class="price-section">
+            <div class="section-header">
+                <h2>📊 Real-Time Prices</h2>
+                <button class="refresh-btn" id="refreshBtn">🔄 Refresh</button>
+            </div>
+            
+            <div class="price-cards">
+                <!-- Bitcoin Card -->
+                <div class="price-card" id="btc-card">
+                    <div class="card-header">
+                        <div class="crypto-info">
+                            <img src="1.png" alt="Bitcoin" class="crypto-logo">
+                            <div>
+                                <h3>Bitcoin</h3>
+                                <p class="crypto-code">BTC</p>
+                            </div>
+                        </div>
+                        <div class="price-change" id="btc-change">
+                            <span class="change-value">--</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-price" id="btc-price">$--</div>
+                        <div class="price-details">
+                            <div class="detail-item">
+                                <span class="label">24h High</span>
+                                <span class="value" id="btc-high">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">24h Low</span>
+                                <span class="value" id="btc-low">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Market Cap</span>
+                                <span class="value" id="btc-mcap">$--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-chart" id="btc-chart">
+                        <canvas id="btc-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Ethereum Card -->
+                <div class="price-card" id="eth-card">
+                    <div class="card-header">
+                        <div class="crypto-info">
+                            <img src="2.png" alt="Ethereum" class="crypto-logo">
+                            <div>
+                                <h3>Ethereum</h3>
+                                <p class="crypto-code">ETH</p>
+                            </div>
+                        </div>
+                        <div class="price-change" id="eth-change">
+                            <span class="change-value">--</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-price" id="eth-price">$--</div>
+                        <div class="price-details">
+                            <div class="detail-item">
+                                <span class="label">24h High</span>
+                                <span class="value" id="eth-high">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">24h Low</span>
+                                <span class="value" id="eth-low">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Market Cap</span>
+                                <span class="value" id="eth-mcap">$--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-chart" id="eth-chart">
+                        <canvas id="eth-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Binance Coin Card -->
+                <div class="price-card" id="bnb-card">
+                    <div class="card-header">
+                        <div class="crypto-info">
+                            <img src="3.png" alt="Binance Coin" class="crypto-logo">
+                            <div>
+                                <h3>Binance Coin</h3>
+                                <p class="crypto-code">BNB</p>
+                            </div>
+                        </div>
+                        <div class="price-change" id="bnb-change">
+                            <span class="change-value">--</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-price" id="bnb-price">$--</div>
+                        <div class="price-details">
+                            <div class="detail-item">
+                                <span class="label">24h High</span>
+                                <span class="value" id="bnb-high">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">24h Low</span>
+                                <span class="value" id="bnb-low">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Market Cap</span>
+                                <span class="value" id="bnb-mcap">$--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-chart" id="bnb-chart">
+                        <canvas id="bnb-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Indicator -->
+        <div class="status-indicator" id="statusIndicator">
+            <span class="status-dot"></span>
+            <span class="status-text">Connecting...</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
