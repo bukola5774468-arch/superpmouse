@@ -1,0 +1,106 @@
+====================================
+EXAMPLE TOKEN CONTRACT ADDRESSES
+====================================
+
+You can test the Custom Rate Tracker with these popular token addresses:
+
+-----------------------------------
+ETHEREUM MAINNET TOKENS
+-----------------------------------
+
+WETH (Wrapped Ethereum):
+0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+
+USDT (Tether) - Official Contract Address:
+0xdac17f958d2ee523a2206206994597c13d831ec7
+(Fetches from CoinMarketCap - $1.00 stable price)
+
+USDT (Tether) - DexTools Pair (Backup):
+0x52ea46506b9cc5ef470c5bf89f17dc28bb35d85c
+
+USDC (USD Coin):
+0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+
+DAI (Dai Stablecoin):
+0x6b175474e89094c44da98b954eedeac495271d0f
+
+WBTC (Wrapped Bitcoin):
+0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
+
+UNI (Uniswap):
+0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
+
+LINK (Chainlink):
+0x514910771af9ca656af840dff83e8264ecf986ca
+
+SHIB (Shiba Inu):
+0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce
+
+-----------------------------------
+QUICK START - USE THE BUTTONS!
+-----------------------------------
+
+Just click the logo buttons:
+1. Click WETH logo (blue circle) on left
+2. Click USDT logo (green circle) on right
+3. Click "Show Rate"
+4. Done! See live WETH/USDT rate with charts!
+
+-----------------------------------
+EXAMPLE USAGE
+-----------------------------------
+
+Try these combinations:
+
+1. WETH/USDT Rate (Using Quick Buttons):
+   - Click WETH button (2.webp)
+   - Click USDT button (1.webp) - Fetches from CoinMarketCap!
+   - Shows USDT logo from CoinMarketCap
+   - Price: ~$1.00 USD (stable)
+   
+1b. WETH/USDT Rate (Manual Entry):
+   Token 1: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+   Token 2: 0x52ea46506b9cc5ef470c5bf89f17dc28bb35d85c (DexTools pair)
+   (Shows how many USDT per 1 ETH)
+
+1b. WETH/USDT Rate (Alternative):
+   Token 1: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+   Token 2: 0xdac17f958d2ee523a2206206994597c13d831ec7 (Token contract)
+   (Shows how many USDT per 1 ETH)
+
+2. WBTC/WETH Rate:
+   Token 1: 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599
+   Token 2: 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+   (Shows how many ETH per 1 BTC)
+
+3. UNI/USDC Rate:
+   Token 1: 0x1f9840a85d5af5bf1d1762f925bdaddc4201f984
+   Token 2: 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+   (Shows how many USDC per 1 UNI)
+
+-----------------------------------
+HOW TO USE
+-----------------------------------
+
+1. Copy a token address from Token 1
+2. Paste it into the "First Token Contract Address" field
+3. Copy a token address from Token 2
+4. Paste it into the "Second Token Contract Address" field
+5. Click "Show Rate" button
+6. View the live exchange rate and chart!
+
+The chart will update every 5 seconds automatically.
+
+-----------------------------------
+TROUBLESHOOTING
+-----------------------------------
+
+If you see an error:
+- Make sure the address is exactly 42 characters (0x + 40 hex digits)
+- Check that the token is actively traded on DEX platforms
+- Verify you have internet connection
+- Try a different token pair
+- Check browser console (F12) for detailed error messages
+
+====================================
+

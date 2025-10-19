@@ -88,46 +88,16 @@
         <!-- Price Cards Section -->
         <section class="price-section">
             <div class="section-header">
-                <h2>📊 Real-Time Prices</h2>
-                <button class="refresh-btn" id="refreshBtn">🔄 Refresh</button>
+                <h2>📊 Real-Time Prices <span style="font-size: 0.6rem; opacity: 0.8;">(DexTools Pairs)</span></h2>
+                <div class="header-buttons">
+                    <button class="test-btn" id="testBtn" onclick="testDataConnection()">🧪 Test API</button>
+                    <button class="refresh-btn" id="refreshBtn">🔄 Refresh</button>
+                </div>
             </div>
             
             <div class="price-cards">
-                <!-- Bitcoin Card -->
-                <div class="price-card" id="btc-card">
-                    <div class="card-header">
-                        <div class="crypto-info">
-                            <img src="1.png" alt="Bitcoin" class="crypto-logo">
-                            <div>
-                                <h3>Bitcoin</h3>
-                                <p class="crypto-code">BTC</p>
-                            </div>
-                        </div>
-                        <div class="price-change" id="btc-change">
-                            <span class="change-value">--</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="current-price" id="btc-price">$--</div>
-                        <div class="price-details">
-                            <div class="detail-item">
-                                <span class="label">24h High</span>
-                                <span class="value" id="btc-high">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">24h Low</span>
-                                <span class="value" id="btc-low">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Market Cap</span>
-                                <span class="value" id="btc-mcap">$--</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mini-chart" id="btc-chart">
-                        <canvas id="btc-canvas"></canvas>
-                    </div>
-                </div>
+                <!-- ETH/BNB Rate Card -->
+               
 
                 <!-- Ethereum Card -->
                 <div class="price-card" id="eth-card">
@@ -135,7 +105,7 @@
                         <div class="crypto-info">
                             <img src="2.png" alt="Ethereum" class="crypto-logo">
                             <div>
-                                <h3>Ethereum</h3>
+                                <h3>Ethereum <span class="live-dot">●</span></h3>
                                 <p class="crypto-code">ETH</p>
                             </div>
                         </div>
@@ -171,7 +141,7 @@
                         <div class="crypto-info">
                             <img src="3.png" alt="Binance Coin" class="crypto-logo">
                             <div>
-                                <h3>Binance Coin</h3>
+                                <h3>Binance Coin <span class="live-dot">●</span></h3>
                                 <p class="crypto-code">BNB</p>
                             </div>
                         </div>
@@ -198,6 +168,158 @@
                     </div>
                     <div class="mini-chart" id="bnb-chart">
                         <canvas id="bnb-canvas"></canvas>
+                    </div>
+                </div>
+                <div class="price-card" id="ethbnb-card">
+                    <div class="card-header">
+                        <div class="crypto-info">
+                            <img src="2.png" alt="ETH/BNB" class="crypto-logo">
+                            <div>
+                                <h3>ETH to BNB Rate <span class="live-dot">●</span></h3>
+                                <p class="crypto-code">ETH/BNB</p>
+                            </div>
+                        </div>
+                        <div class="price-change" id="ethbnb-change">
+                            <span class="change-value">--</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-price" id="ethbnb-rate">--</div>
+                        <div class="price-details">
+                            <div class="detail-item">
+                                <span class="label">ETH Price</span>
+                                <span class="value" id="ethbnb-eth-price">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">BNB Price</span>
+                                <span class="value" id="ethbnb-bnb-price">$--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Live Rate</span>
+                                <span class="value" id="ethbnb-live-rate">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-chart" id="ethbnb-chart">
+                        <canvas id="ethbnb-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Rate Tracker Section -->
+        <section class="custom-rate-section">
+            <div class="section-header">
+                <h2>🔍 Custom Token Rate Tracker</h2>
+            </div>
+            
+            <div class="custom-rate-container">
+                <div class="custom-rate-inputs">
+                    <div class="input-group">
+                        <label for="token1Address">First Token Contract Address</label>
+                        <div class="input-with-shortcuts">
+                            <input type="text" id="token1Address" placeholder="0x..." maxlength="42">
+                            <div class="token-shortcuts">
+                                <button class="shortcut-btn" data-input="token1" data-address="0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" title="WETH">
+                                    <img src="2.webp" alt="WETH" class="shortcut-logo">
+                                </button>
+                                <button class="shortcut-btn" data-input="token1" data-address="0xdac17f958d2ee523a2206206994597c13d831ec7" title="USDT">
+                                    <img src="1.webp" alt="USDT" class="shortcut-logo">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-hint">Base token (numerator)</div>
+                    </div>
+                    
+                    <div class="rate-arrow">→</div>
+                    
+                    <div class="input-group">
+                        <label for="token2Address">Second Token Contract Address</label>
+                        <div class="input-with-shortcuts">
+                            <input type="text" id="token2Address" placeholder="0x..." maxlength="42">
+                            <div class="token-shortcuts">
+                                <button class="shortcut-btn" data-input="token2" data-address="0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" title="WETH">
+                                    <img src="2.webp" alt="WETH" class="shortcut-logo">
+                                </button>
+                                <button class="shortcut-btn" data-input="token2" data-address="0xdac17f958d2ee523a2206206994597c13d831ec7" title="USDT">
+                                    <img src="1.webp" alt="USDT" class="shortcut-logo">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-hint">Quote token (denominator)</div>
+                    </div>
+                </div>
+                
+                <button id="showRateBtn" class="show-rate-btn" disabled>
+                    Show Rate
+                </button>
+                
+                <div id="customRateDisplay" class="custom-rate-display" style="display: none;">
+                    <div class="custom-rate-card">
+                        <div class="rate-header">
+                            <div class="token-info">
+                                <div class="token-display">
+                                    <img id="customToken1Logo" class="custom-token-logo" src="" alt="" style="display: none;">
+                                    <div class="token-text">
+                                        <span class="token-symbol" id="customToken1Symbol">TOKEN1</span>
+                                        <span class="data-source" id="customToken1Source"></span>
+                                    </div>
+                                </div>
+                                <span class="rate-divider">/</span>
+                                <div class="token-display">
+                                    <img id="customToken2Logo" class="custom-token-logo" src="" alt="" style="display: none;">
+                                    <div class="token-text">
+                                        <span class="token-symbol" id="customToken2Symbol">TOKEN2</span>
+                                        <span class="data-source" id="customToken2Source"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rate-header-right">
+                                <div class="rate-change" id="customRateChange">
+                                    <span class="change-value">--</span>
+                                </div>
+                                <div class="dextools-hint">💡 Click logos to view on DexTools</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rate-body">
+                            <div class="live-rate-display">
+                                <div class="live-badge">🔴 LIVE</div>
+                                <div class="current-rate" id="customCurrentRate">--</div>
+                                <div class="rate-description">Token 1 / Token 2 Exchange Rate</div>
+                            </div>
+                            
+                            <div class="rate-details-grid">
+                                <div class="token-price-card">
+                                    <div class="price-card-header">
+                                        <span class="price-label" id="customToken1PriceLabel">Token 1 Price</span>
+                                        <span class="live-indicator">●</span>
+                                    </div>
+                                    <div class="price-value" id="customToken1Price">$--</div>
+                                    <div class="mini-price-chart">
+                                        <canvas id="custom-token1-canvas"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="token-price-card">
+                                    <div class="price-card-header">
+                                        <span class="price-label" id="customToken2PriceLabel">Token 2 Price</span>
+                                        <span class="live-indicator">●</span>
+                                    </div>
+                                    <div class="price-value" id="customToken2Price">$--</div>
+                                    <div class="mini-price-chart">
+                                        <canvas id="custom-token2-canvas"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="main-rate-chart-section">
+                            <h3 class="chart-title">📈 Rate Chart</h3>
+                            <div class="mini-chart" id="custom-rate-chart">
+                                <canvas id="custom-rate-canvas"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
