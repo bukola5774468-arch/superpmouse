@@ -4,17 +4,10 @@
 // Set your password here (change this to your desired password)
 const DASHBOARD_PASSWORD = "Moon2025!@#";
 
-// Check if already authenticated
+// Always require password on page load/reload
 document.addEventListener('DOMContentLoaded', () => {
-    const isAuthenticated = sessionStorage.getItem('dashboard_authenticated');
-    
-    if (isAuthenticated === 'true') {
-        // Already logged in, show dashboard
-        unlockDashboard();
-    } else {
-        // Show password screen
-        document.getElementById('mainContent').style.display = 'none';
-    }
+    // Always show password screen on load
+    document.getElementById('mainContent').style.display = 'none';
     
     // Password input handlers
     const passwordInput = document.getElementById('passwordInput');
@@ -40,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (enteredPassword === DASHBOARD_PASSWORD) {
             // Correct password
             passwordError.textContent = '';
-            sessionStorage.setItem('dashboard_authenticated', 'true');
             
             // Success animation
             document.querySelector('.password-container').classList.add('success');
@@ -100,9 +92,8 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Add logout function (optional - can be called from console or button)
-window.logout = function() {
-    sessionStorage.removeItem('dashboard_authenticated');
+// Reload function to go back to password screen
+window.lockDashboard = function() {
     location.reload();
 };
 
