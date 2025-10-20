@@ -85,123 +85,154 @@
             </div>
         </section>
 
-        <!-- Price Cards Section -->
-        <section class="price-section">
-            <div class="section-header">
-                <h2>📊 Real-Time Prices <span style="font-size: 0.6rem; opacity: 0.8;">(DexTools Pairs)</span></h2>
-                <div class="header-buttons">
-                    <button class="test-btn" id="testBtn" onclick="testDataConnection()">🧪 Test API</button>
-                    <button class="refresh-btn" id="refreshBtn">🔄 Refresh</button>
-                </div>
-            </div>
-            
-            <div class="price-cards">
-                <!-- ETH/BNB Rate Card -->
-               
+        <!-- Professional Real-Time Trading Panel -->
+        <section class="trading-panel">
+   
 
+            <div class="trading-cards">
                 <!-- Ethereum Card -->
-                <div class="price-card" id="eth-card">
-                    <div class="card-header">
-                        <div class="crypto-info">
-                            <img src="2.png" alt="Ethereum" class="crypto-logo">
-                            <div>
-                                <h3>Ethereum <span class="live-dot">●</span></h3>
-                                <p class="crypto-code">ETH</p>
+                <div class="trading-card eth-card">
+                    <div class="card-top">
+                        <div class="crypto-header">
+                            <img src="2.png" alt="Ethereum" class="coin-logo">
+                            <div class="coin-info">
+                                <h3 class="coin-name">Ethereum</h3>
+                                <span class="coin-symbol">ETH</span>
                             </div>
                         </div>
-                        <div class="price-change" id="eth-change">
-                            <span class="change-value">--</span>
+                        <a href="https://www.dextools.io/app/en/ether/pair-explorer/0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8" 
+                           target="_blank" 
+                           class="dextools-badge">
+                            DexTools ↗
+                        </a>
+                    </div>
+                    
+                    <div class="price-display">
+                        <div class="current-price" id="eth-price-display">$--</div>
+                        <div class="price-change-badge" id="eth-change-display">
+                            <span class="change-percent">--</span>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="current-price" id="eth-price">$--</div>
-                        <div class="price-details">
-                            <div class="detail-item">
-                                <span class="label">24h High</span>
-                                <span class="value" id="eth-high">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">24h Low</span>
-                                <span class="value" id="eth-low">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Market Cap</span>
-                                <span class="value" id="eth-mcap">$--</span>
-                            </div>
+                    
+                    <div class="price-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">24h High</span>
+                            <span class="stat-value" id="eth-high-display">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">24h Low</span>
+                            <span class="stat-value" id="eth-low-display">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Volume</span>
+                            <span class="stat-value" id="eth-volume-display">$--</span>
                         </div>
                     </div>
-                    <div class="mini-chart" id="eth-chart">
-                        <canvas id="eth-canvas"></canvas>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <span class="chart-title">24H Chart</span>
+                            <span class="chart-timeframe">Last 60 data points</span>
+                        </div>
+                        <canvas id="eth-chart-display" class="price-chart"></canvas>
                     </div>
                 </div>
 
                 <!-- Binance Coin Card -->
-                <div class="price-card" id="bnb-card">
-                    <div class="card-header">
-                        <div class="crypto-info">
-                            <img src="3.png" alt="Binance Coin" class="crypto-logo">
-                            <div>
-                                <h3>Binance Coin <span class="live-dot">●</span></h3>
-                                <p class="crypto-code">BNB</p>
+                <div class="trading-card bnb-card">
+                    <div class="card-top">
+                        <div class="crypto-header">
+                            <img src="3.png" alt="Binance Coin" class="coin-logo">
+                            <div class="coin-info">
+                                <h3 class="coin-name">Binance Coin</h3>
+                                <span class="coin-symbol">BNB</span>
                             </div>
                         </div>
-                        <div class="price-change" id="bnb-change">
-                            <span class="change-value">--</span>
+                        <a href="https://www.dextools.io/app/en/bnb/pair-explorer/0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae" 
+                           target="_blank" 
+                           class="dextools-badge">
+                            DexTools ↗
+                        </a>
+                    </div>
+                    
+                    <div class="price-display">
+                        <div class="current-price" id="bnb-price-display">$--</div>
+                        <div class="price-change-badge" id="bnb-change-display">
+                            <span class="change-percent">--</span>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="current-price" id="bnb-price">$--</div>
-                        <div class="price-details">
-                            <div class="detail-item">
-                                <span class="label">24h High</span>
-                                <span class="value" id="bnb-high">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">24h Low</span>
-                                <span class="value" id="bnb-low">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Market Cap</span>
-                                <span class="value" id="bnb-mcap">$--</span>
-                            </div>
+                    
+                    <div class="price-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">24h High</span>
+                            <span class="stat-value" id="bnb-high-display">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">24h Low</span>
+                            <span class="stat-value" id="bnb-low-display">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Volume</span>
+                            <span class="stat-value" id="bnb-volume-display">$--</span>
                         </div>
                     </div>
-                    <div class="mini-chart" id="bnb-chart">
-                        <canvas id="bnb-canvas"></canvas>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <span class="chart-title">24H Chart</span>
+                            <span class="chart-timeframe">Last 60 data points</span>
+                        </div>
+                        <canvas id="bnb-chart-display" class="price-chart"></canvas>
                     </div>
                 </div>
-                <div class="price-card" id="ethbnb-card">
-                    <div class="card-header">
-                        <div class="crypto-info">
-                            <img src="2.png" alt="ETH/BNB" class="crypto-logo">
-                            <div>
-                                <h3>ETH to BNB Rate <span class="live-dot">●</span></h3>
-                                <p class="crypto-code">ETH/BNB</p>
+
+                <!-- ETH/BNB Rate Card -->
+                <div class="trading-card rate-card">
+                    <div class="card-top">
+                        <div class="crypto-header">
+                            <div class="dual-logo">
+                                <img src="2.png" alt="ETH" class="coin-logo-small">
+                                <span class="vs-divider">/</span>
+                                <img src="3.png" alt="BNB" class="coin-logo-small">
+                            </div>
+                            <div class="coin-info">
+                                <h3 class="coin-name">Exchange Rate</h3>
+                                <span class="coin-symbol">ETH/BNB</span>
                             </div>
                         </div>
-                        <div class="price-change" id="ethbnb-change">
-                            <span class="change-value">--</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="current-price" id="ethbnb-rate">--</div>
-                        <div class="price-details">
-                            <div class="detail-item">
-                                <span class="label">ETH Price</span>
-                                <span class="value" id="ethbnb-eth-price">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">BNB Price</span>
-                                <span class="value" id="ethbnb-bnb-price">$--</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="label">Live Rate</span>
-                                <span class="value" id="ethbnb-live-rate">--</span>
-                            </div>
+                        <div class="rate-indicator">
+                            <span class="rate-label">LIVE RATE</span>
                         </div>
                     </div>
-                    <div class="mini-chart" id="ethbnb-chart">
-                        <canvas id="ethbnb-canvas"></canvas>
+                    
+                    <div class="price-display">
+                        <div class="current-price rate-price" id="rate-display">-- BNB</div>
+                        <div class="price-change-badge" id="rate-change-display">
+                            <span class="change-percent">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="price-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">ETH Price</span>
+                            <span class="stat-value" id="rate-eth-price">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">BNB Price</span>
+                            <span class="stat-value" id="rate-bnb-price">$--</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Spread</span>
+                            <span class="stat-value" id="rate-spread">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <span class="chart-title">24H Rate Chart</span>
+                            <span class="chart-timeframe">Last 60 data points</span>
+                        </div>
+                        <canvas id="rate-chart-display" class="price-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -209,9 +240,7 @@
 
         <!-- Custom Rate Tracker Section -->
         <section class="custom-rate-section">
-            <div class="section-header">
-                <h2>🔍 Custom Token Rate Tracker</h2>
-            </div>
+         
             
             <div class="custom-rate-container">
                 <div class="custom-rate-inputs">
@@ -290,26 +319,20 @@
                             </div>
                             
                             <div class="rate-details-grid">
-                                <div class="token-price-card">
+                                <div class="token-price-card-simple">
                                     <div class="price-card-header">
                                         <span class="price-label" id="customToken1PriceLabel">Token 1 Price</span>
                                         <span class="live-indicator">●</span>
                                     </div>
                                     <div class="price-value" id="customToken1Price">$--</div>
-                                    <div class="mini-price-chart">
-                                        <canvas id="custom-token1-canvas"></canvas>
-                                    </div>
                                 </div>
                                 
-                                <div class="token-price-card">
+                                <div class="token-price-card-simple">
                                     <div class="price-card-header">
                                         <span class="price-label" id="customToken2PriceLabel">Token 2 Price</span>
                                         <span class="live-indicator">●</span>
                                     </div>
                                     <div class="price-value" id="customToken2Price">$--</div>
-                                    <div class="mini-price-chart">
-                                        <canvas id="custom-token2-canvas"></canvas>
-                                    </div>
                                 </div>
                             </div>
                         </div>

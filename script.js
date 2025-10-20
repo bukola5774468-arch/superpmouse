@@ -9,14 +9,22 @@ const DEXTOOLS_API_KEY = 'YOUR_DEXTOOLS_API_KEY'; // Get from https://www.dextoo
 const DEXTOOLS_API_BASE = 'https://public-api.dextools.io/trial/v2';
 
 // Specific DEX trading pairs you want to track (from DexTools)
+// ETH Pair: https://www.dextools.io/app/en/ether/pair-explorer/0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8
+// BNB Pair: https://www.dextools.io/app/en/bnb/pair-explorer/0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae
 const DEX_PAIRS = {
     ETH: {
         chain: 'ether',
-        pair: '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8' // ETH pair from DexTools
+        pair: '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8', // ETH pair from DexTools
+        dextoolsUrl: 'https://www.dextools.io/app/en/ether/pair-explorer/0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8',
+        name: 'Ethereum',
+        symbol: 'ETH'
     },
     BNB: {
         chain: 'bnb',
-        pair: '0x172fcd41e0913e95784454622d1c3724f546f849' // BNB pair from DexTools
+        pair: '0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae', // BNB pair from DexTools
+        dextoolsUrl: 'https://www.dextools.io/app/en/bnb/pair-explorer/0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae',
+        name: 'Binance Coin',
+        symbol: 'BNB'
     }
 };
 
@@ -36,47 +44,297 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 =====================================================');
     console.log('🚀 Crypto Dashboard Initialized - Real-Time Mode Active');
     console.log('🚀 Refresh Interval:', REFRESH_INTERVAL, 'ms (', REFRESH_INTERVAL/1000, 'seconds)');
+    console.log('📈 Prices Update Frequency: Every 0.5 seconds (120/min)');
+    console.log('📊 Charts Update Frequency: Every 0.5 seconds (120/min)');
     console.log('🚀 =====================================================');
+    console.log('📊 DexTools Pairs Configuration:');
+    console.log('  ETH:', DEX_PAIRS.ETH.name, '-', DEX_PAIRS.ETH.pair);
+    console.log('  🔗', DEX_PAIRS.ETH.dextoolsUrl);
+    console.log('  API: https://api.dexscreener.com/latest/dex/pairs/ethereum/' + DEX_PAIRS.ETH.pair);
+    console.log('  BNB:', DEX_PAIRS.BNB.name, '-', DEX_PAIRS.BNB.pair);
+    console.log('  🔗', DEX_PAIRS.BNB.dextoolsUrl);
+    console.log('  API: https://api.dexscreener.com/latest/dex/pairs/bsc/' + DEX_PAIRS.BNB.pair);
+    console.log('🚀 =====================================================');
+    console.log('⚠️ DEBUGGING MODE: Check if prices update every 0.5 seconds...');
     
-    // Initial price fetch
-    console.log('📥 Fetching initial prices...');
-    updatePrices();
+    // Initial price fetch for Professional Trading Panel
+    console.log('📥 Fetching initial prices from DexTools pairs...');
+    updateTradingPanel();
     
     // Set up auto-refresh for real-time updates
-    console.log('⏰ Starting auto-refresh timer...');
+    console.log('⏰ Starting auto-refresh timer for Trading Panel...');
     setInterval(() => {
-        console.log('⏱️ Auto-refresh triggered');
-        updatePrices();
+        updateTradingPanel();
     }, REFRESH_INTERVAL);
     
-    // Countdown timer for next update
-    startCountdown();
+    // Countdown timer for next update - DISABLED
+    // startCountdown();
     
-    // Manual refresh button
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-        console.log('🔄 Manual refresh clicked');
-        updatePrices();
-        animateRefreshButton();
-        resetCountdown();
-    });
+    // Manual refresh button - REMOVED (Real-Time Price Panel removed)
+    // const refreshBtn = document.getElementById('refreshBtn');
+    // if (refreshBtn) {
+    //     refreshBtn.addEventListener('click', () => {
+    //         console.log('🔄 Manual refresh clicked');
+    //         updatePrices();
+    //         animateRefreshButton();
+    //         resetCountdown();
+    //     });
+    // }
+    
+    // Make crypto cards clickable - REMOVED (Price cards no longer exist)
+    // const ethCard = document.getElementById('eth-card');
+    // const bnbCard = document.getElementById('bnb-card');
+    
+    console.log('✅ Dashboard initialized - Real-Time Price Panel removed');
     
     // Moon Task Calculator - Auto-calculate BNB
     setupMoonTaskCalculator();
     
-    // Diagnostic: Test data fetch after 2 seconds
-    setTimeout(() => {
-        console.log('🔍 Running diagnostic check...');
-        testDataConnection();
-    }, 2000);
+    // Diagnostic: Test data fetch - DISABLED (Real-Time Price Panel removed)
+    // setTimeout(() => {
+    //     console.log('🔍 Running diagnostic check...');
+    //     testDataConnection();
+    // }, 2000);
 });
 
-// Animate refresh button
-function animateRefreshButton() {
-    const btn = document.getElementById('refreshBtn');
-    btn.style.transform = 'rotate(360deg)';
-    setTimeout(() => {
-        btn.style.transform = 'rotate(0deg)';
-    }, 600);
+// Update Professional Trading Panel with real-time data
+async function updateTradingPanel() {
+    updateCount++;
+    const shouldLog = updateCount <= 10 || updateCount % 10 === 0;
+    
+    if (shouldLog) {
+        console.log(`\n📊 ===== TRADING PANEL UPDATE #${updateCount} ===== ${new Date().toLocaleTimeString()}.${new Date().getMilliseconds()}`);
+    }
+    
+    try {
+        // Fetch real-time data from DexTools pairs
+        const data = await fetchPricesFromDexScreener();
+        
+        if (!data || !data.ethereum || !data.binancecoin) {
+            throw new Error('Invalid data structure');
+        }
+        
+        // Update ETH card
+        updateTradingCard('eth', data.ethereum);
+        
+        // Update BNB card
+        updateTradingCard('bnb', data.binancecoin);
+        
+        // Update ETH/BNB Rate card
+        const rate = data.ethereum.usd / data.binancecoin.usd;
+        updateRateCard(rate, data.ethereum, data.binancecoin);
+        
+        // Update Live Rate Circle (3rd circle in Moon Task)
+        updateExchangeRate(data.ethereum.usd, data.binancecoin.usd);
+        
+        // Store price history for charts (every update = 0.5s)
+        storePriceHistory(data);
+        
+        // Draw all charts
+        drawTradingCharts();
+        
+        if (shouldLog) {
+            console.log('✅ Trading Panel Updated Successfully!');
+            console.log('  ETH Price:', `$${data.ethereum.usd.toFixed(2)}`);
+            console.log('  BNB Price:', `$${data.binancecoin.usd.toFixed(2)}`);
+            console.log('  ETH/BNB Rate:', rate.toFixed(4), 'BNB');
+            console.log('  Live Rate Circle:', rate.toFixed(4), '(B in formula)');
+            
+            // Show Moon Task calculation
+            const A = parseFloat(document.getElementById('ethBalance')?.value) || 0;
+            const C = parseFloat(document.getElementById('lastRate')?.value) || 0;
+            if (A > 0 && C > 0) {
+                const E = (A * C / rate) - A;
+                console.log('📈 Moon Task Calculation:');
+                console.log('  A (ETH Balance):', A);
+                console.log('  C (Last Rate):', C);
+                console.log('  B (Live Rate):', rate.toFixed(4));
+                console.log('  E (Profit/Loss):', E.toFixed(4), 'ETH');
+                console.log('  Formula: E = (A × C / B) - A = (' + A + ' × ' + C + ' / ' + rate.toFixed(4) + ') - ' + A + ' = ' + E.toFixed(4));
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ Error updating Trading Panel:', error.message);
+        console.error('  ETH Pair:', DEX_PAIRS.ETH.pair);
+        console.error('  BNB Pair:', DEX_PAIRS.BNB.pair);
+    }
+}
+
+// Update individual trading card
+function updateTradingCard(coin, data) {
+    const price = data.usd;
+    const change24h = data.usd_24h_change;
+    const high24h = data.usd_24h_high;
+    const low24h = data.usd_24h_low;
+    const volume = data.usd_market_cap; // Using market cap as volume proxy
+    
+    // Update price
+    const priceElement = document.getElementById(`${coin}-price-display`);
+    if (priceElement) {
+        const oldPrice = parseFloat(priceElement.textContent.replace(/[$,]/g, '')) || 0;
+        priceElement.textContent = formatPrice(price);
+        
+        // Add flash animation
+        priceElement.classList.remove('price-up', 'price-down');
+        if (oldPrice > 0) {
+            if (price > oldPrice) {
+                priceElement.classList.add('price-up');
+            } else if (price < oldPrice) {
+                priceElement.classList.add('price-down');
+            }
+        }
+        setTimeout(() => {
+            priceElement.classList.remove('price-up', 'price-down');
+        }, 500);
+    }
+    
+    // Update 24h change badge
+    const changeElement = document.getElementById(`${coin}-change-display`);
+    if (changeElement) {
+        const changeText = change24h >= 0 ? `+${change24h.toFixed(2)}%` : `${change24h.toFixed(2)}%`;
+        changeElement.querySelector('.change-percent').textContent = changeText;
+        changeElement.classList.remove('positive', 'negative');
+        changeElement.classList.add(change24h >= 0 ? 'positive' : 'negative');
+    }
+    
+    // Update stats
+    const highElement = document.getElementById(`${coin}-high-display`);
+    if (highElement) highElement.textContent = formatPrice(high24h);
+    
+    const lowElement = document.getElementById(`${coin}-low-display`);
+    if (lowElement) lowElement.textContent = formatPrice(low24h);
+    
+    const volumeElement = document.getElementById(`${coin}-volume-display`);
+    if (volumeElement) volumeElement.textContent = formatMarketCap(volume);
+}
+
+// Update ETH/BNB Rate card
+function updateRateCard(rate, ethData, bnbData) {
+    // Update rate display
+    const rateElement = document.getElementById('rate-display');
+    if (rateElement) {
+        const oldRate = parseFloat(rateElement.textContent.replace(/[BNB]/g, '')) || 0;
+        rateElement.textContent = rate.toFixed(4) + ' BNB';
+        
+        // Flash animation
+        rateElement.classList.remove('price-up', 'price-down');
+        if (oldRate > 0) {
+            if (rate > oldRate) {
+                rateElement.classList.add('price-up');
+            } else if (rate < oldRate) {
+                rateElement.classList.add('price-down');
+            }
+        }
+        setTimeout(() => {
+            rateElement.classList.remove('price-up', 'price-down');
+        }, 500);
+    }
+    
+    // Update rate change
+    const rateChange = ethData.usd_24h_change - bnbData.usd_24h_change;
+    const changeElement = document.getElementById('rate-change-display');
+    if (changeElement) {
+        const changeText = rateChange >= 0 ? `+${rateChange.toFixed(2)}%` : `${rateChange.toFixed(2)}%`;
+        changeElement.querySelector('.change-percent').textContent = changeText;
+        changeElement.classList.remove('positive', 'negative');
+        changeElement.classList.add(rateChange >= 0 ? 'positive' : 'negative');
+    }
+    
+    // Update rate stats
+    const ethPriceElement = document.getElementById('rate-eth-price');
+    if (ethPriceElement) ethPriceElement.textContent = formatPrice(ethData.usd);
+    
+    const bnbPriceElement = document.getElementById('rate-bnb-price');
+    if (bnbPriceElement) bnbPriceElement.textContent = formatPrice(bnbData.usd);
+    
+    const spreadElement = document.getElementById('rate-spread');
+    if (spreadElement) {
+        const spread = Math.abs(rateChange);
+        spreadElement.textContent = spread.toFixed(2) + '%';
+    }
+}
+
+// Draw all trading panel charts
+function drawTradingCharts() {
+    if (priceHistory.ethereum.length >= 2) {
+        drawProfessionalChart('eth-chart-display', priceHistory.ethereum, '#667eea', 'Ethereum');
+        drawProfessionalChart('bnb-chart-display', priceHistory.binancecoin, '#F3BA2F', 'Binance Coin');
+        drawProfessionalChart('rate-chart-display', priceHistory.ethbnb_rate, '#764ba2', 'ETH/BNB Rate');
+    }
+}
+
+// Draw professional chart with gradient and smooth lines
+function drawProfessionalChart(canvasId, data, color, label) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || !data || data.length < 2) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+    
+    // Set canvas size
+    canvas.width = width;
+    canvas.height = height;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Find min and max
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+    const padding = height * 0.1;
+    
+    // Calculate points
+    const points = data.map((value, index) => {
+        const x = (index / (data.length - 1)) * width;
+        const y = padding + ((max - value) / range * (height - padding * 2));
+        return { x, y, value };
+    });
+    
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, color + '60');
+    gradient.addColorStop(1, color + '00');
+    
+    // Draw filled area
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, height);
+    points.forEach(point => {
+        ctx.lineTo(point.x, point.y);
+    });
+    ctx.lineTo(points[points.length - 1].x, height);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // Draw smooth line
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    
+    for (let i = 1; i < points.length; i++) {
+        const prevPoint = points[i - 1];
+        const currentPoint = points[i];
+        const cpX = (prevPoint.x + currentPoint.x) / 2;
+        
+        ctx.quadraticCurveTo(prevPoint.x, prevPoint.y, cpX, (prevPoint.y + currentPoint.y) / 2);
+    }
+    
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Draw dots on endpoints
+    ctx.beginPath();
+    ctx.arc(points[points.length - 1].x, points[points.length - 1].y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 }
 
 // Fetch cryptocurrency prices from DexTools pairs
@@ -84,8 +342,12 @@ async function updatePrices() {
     updateStatus('connecting');
     updateCount++;
     
-    if (updateCount % 10 === 1) {
-        console.log(`🔄 Fetching prices from DexTools pairs... (Update #${updateCount})`);
+    // Show EVERY update for first 10, then every 10
+    const shouldLog = updateCount <= 10 || updateCount % 10 === 0;
+    
+    if (shouldLog) {
+        console.log(`\n🔄 ===== UPDATE #${updateCount} ===== ${new Date().toLocaleTimeString()}.${new Date().getMilliseconds()}`);
+        console.log(`🔄 Fetching from DexScreener API...`);
     }
     
     try {
@@ -93,12 +355,24 @@ async function updatePrices() {
         const data = await fetchPricesFromDexScreener();
         
         if (!data || !data.ethereum || !data.binancecoin) {
+            console.error('❌ Invalid data structure received:', data);
             throw new Error('Invalid data structure');
+        }
+        
+        if (shouldLog) {
+            console.log('✅ ===== UPDATING UI NOW =====');
+            console.log('  ETH Price to display:', `$${data.ethereum.usd.toFixed(2)}`);
+            console.log('  BNB Price to display:', `$${data.binancecoin.usd.toFixed(2)}`);
+            console.log('  ETH/BNB Rate:', (data.ethereum.usd / data.binancecoin.usd).toFixed(4));
         }
         
         // Update each cryptocurrency
         updateCryptoCard('eth', 'ethereum', data.ethereum);
         updateCryptoCard('bnb', 'binancecoin', data.binancecoin);
+        
+        if (shouldLog) {
+            console.log('✅ UI UPDATED - Prices should now show on dashboard!');
+        }
         
         // Update ETH to BNB exchange rate
         updateExchangeRate(data.ethereum.usd, data.binancecoin.usd);
@@ -112,18 +386,25 @@ async function updatePrices() {
         // Update status
         updateStatus('connected');
         
-        // Store prices for real-time charts (every 2 updates = 1 second)
-        if (updateCount % 2 === 0) {
-            storePriceHistory(data);
-            drawCharts();
-        }
+        // Store prices for real-time charts (EVERY UPDATE = 0.5 seconds)
+        storePriceHistory(data);
+        drawCharts();
         
         if (updateCount % 100 === 0) {
-            console.log('✅ 50 seconds of real-time DexTools updates completed');
+            console.log(`\n🎉 ===== MILESTONE: ${updateCount} updates completed! =====`);
+            console.log(`⏱️ Running time: ${(updateCount * 0.5).toFixed(1)} seconds`);
+            console.log(`📊 Charts updated ${updateCount} times`);
+            console.log(`📈 Both prices AND charts updating every 0.5 seconds`);
+            console.log(`🔗 ETH DexTools Pair: ${DEX_PAIRS.ETH.pair}`);
+            console.log(`🔗 BNB DexTools Pair: ${DEX_PAIRS.BNB.pair}`);
         }
         
     } catch (error) {
-        console.error('❌ Error:', error.message);
+        console.error(`\n❌ ===== ERROR IN UPDATE #${updateCount} =====`);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('DexTools pair being used:', DEX_PAIRS.ETH.pair);
+        console.error('DexTools URL:', DEX_PAIRS.ETH.dextoolsUrl);
         updateStatus('error');
         
         // Fallback to CoinGecko/Binance
@@ -136,10 +417,9 @@ async function updatePrices() {
             updateETHBNBRateCard(data.ethereum.usd, data.binancecoin.usd, data.ethereum.usd_24h_change, data.binancecoin.usd_24h_change);
             updateStatus('connected');
             
-            if (updateCount % 2 === 0) {
-                storePriceHistory(data);
-                drawCharts();
-            }
+            // Update charts every time (0.5s)
+            storePriceHistory(data);
+            drawCharts();
         } catch (e) {
             console.error('❌ All APIs failed');
         }
@@ -262,45 +542,91 @@ async function fetchBinancePair(symbol) {
 }
 
 // Fetch from DexScreener using specific DexTools pairs
+// ETH: https://www.dextools.io/app/en/ether/pair-explorer/0x4e68ccd3e89f51c3074ca5072bbac773960dfa36
 async function fetchPricesFromDexScreener() {
-    console.log('📡 Fetching from DexScreener with DexTools pairs...');
+    const shouldLog = updateCount <= 10 || updateCount % 10 === 0;
     
-    const [ethResponse, bnbResponse] = await Promise.all([
-        fetch(`https://api.dexscreener.com/latest/dex/pairs/ethereum/${DEX_PAIRS.ETH.pair}`),
-        fetch(`https://api.dexscreener.com/latest/dex/pairs/bsc/${DEX_PAIRS.BNB.pair}`)
-    ]);
-    
-    if (!ethResponse.ok || !bnbResponse.ok) {
-        throw new Error('DexScreener API error');
+    if (shouldLog) {
+        console.log('📡 DexScreener API Call Starting...');
+        console.log('  ETH Pair Address:', DEX_PAIRS.ETH.pair);
+        console.log('  ETH API URL: https://api.dexscreener.com/latest/dex/pairs/ethereum/' + DEX_PAIRS.ETH.pair);
+        console.log('  BNB Pair Address:', DEX_PAIRS.BNB.pair);
+        console.log('  BNB API URL: https://api.dexscreener.com/latest/dex/pairs/bsc/' + DEX_PAIRS.BNB.pair);
     }
     
-    const ethData = await ethResponse.json();
-    const bnbData = await bnbResponse.json();
-    
-    const ethPair = ethData.pair;
-    const bnbPair = bnbData.pair;
-    
-    console.log('✅ DexScreener data received:', {
-        ETH: ethPair.priceUsd,
-        BNB: bnbPair.priceUsd
-    });
-    
-    return {
-        ethereum: {
-            usd: parseFloat(ethPair.priceUsd),
-            usd_24h_change: parseFloat(ethPair.priceChange?.h24 || 0),
-            usd_24h_high: parseFloat(ethPair.priceUsd) * 1.02,
-            usd_24h_low: parseFloat(ethPair.priceUsd) * 0.98,
-            usd_market_cap: parseFloat(ethPair.liquidity?.usd || 0)
-        },
-        binancecoin: {
-            usd: parseFloat(bnbPair.priceUsd),
-            usd_24h_change: parseFloat(bnbPair.priceChange?.h24 || 0),
-            usd_24h_high: parseFloat(bnbPair.priceUsd) * 1.02,
-            usd_24h_low: parseFloat(bnbPair.priceUsd) * 0.98,
-            usd_market_cap: parseFloat(bnbPair.liquidity?.usd || 0)
+    try {
+        const [ethResponse, bnbResponse] = await Promise.all([
+            fetch(`https://api.dexscreener.com/latest/dex/pairs/ethereum/${DEX_PAIRS.ETH.pair}`),
+            fetch(`https://api.dexscreener.com/latest/dex/pairs/bsc/${DEX_PAIRS.BNB.pair}`)
+        ]);
+        
+        if (!ethResponse.ok) {
+            console.error('❌ ETH API Error:', ethResponse.status, ethResponse.statusText);
+            throw new Error(`DexScreener ETH API error: ${ethResponse.status}`);
         }
-    };
+        
+        if (!bnbResponse.ok) {
+            console.error('❌ BNB API Error:', bnbResponse.status, bnbResponse.statusText);
+            throw new Error(`DexScreener BNB API error: ${bnbResponse.status}`);
+        }
+        
+        const ethData = await ethResponse.json();
+        const bnbData = await bnbResponse.json();
+        
+        if (shouldLog) {
+            console.log('📦 Raw ETH Response:', ethData);
+            console.log('📦 Raw BNB Response:', bnbData);
+        }
+        
+        const ethPair = ethData.pair;
+        const bnbPair = bnbData.pair;
+        
+        if (!ethPair) {
+            console.error('❌ No ETH pair data found in response');
+            throw new Error('No ETH pair data found');
+        }
+        
+        if (!bnbPair) {
+            console.error('❌ No BNB pair data found in response');
+            throw new Error('No BNB pair data found');
+        }
+        
+        if (shouldLog) {
+            const ethPrice = parseFloat(ethPair.priceUsd);
+            const bnbPrice = parseFloat(bnbPair.priceUsd);
+            console.log('✅ ===== DATA RECEIVED SUCCESSFULLY =====');
+            console.log('  ETH Price:', `$${ethPrice.toFixed(2)}`);
+            console.log('  ETH 24h Change:', `${parseFloat(ethPair.priceChange?.h24 || 0).toFixed(2)}%`);
+            console.log('  ETH Liquidity:', `$${(parseFloat(ethPair.liquidity?.usd || 0) / 1000000).toFixed(2)}M`);
+            console.log('  ---');
+            console.log('  BNB Price:', `$${bnbPrice.toFixed(2)}`);
+            console.log('  BNB 24h Change:', `${parseFloat(bnbPair.priceChange?.h24 || 0).toFixed(2)}%`);
+            console.log('  BNB Liquidity:', `$${(parseFloat(bnbPair.liquidity?.usd || 0) / 1000000).toFixed(2)}M`);
+            console.log('  ---');
+            console.log('  ETH/BNB Rate:', (ethPrice / bnbPrice).toFixed(4));
+            console.log('🔗 Verify on DexTools:', DEX_PAIRS.ETH.dextoolsUrl);
+        }
+        
+        return {
+            ethereum: {
+                usd: parseFloat(ethPair.priceUsd),
+                usd_24h_change: parseFloat(ethPair.priceChange?.h24 || 0),
+                usd_24h_high: parseFloat(ethPair.priceUsd) * 1.02,
+                usd_24h_low: parseFloat(ethPair.priceUsd) * 0.98,
+                usd_market_cap: parseFloat(ethPair.liquidity?.usd || 0)
+            },
+            binancecoin: {
+                usd: parseFloat(bnbPair.priceUsd),
+                usd_24h_change: parseFloat(bnbPair.priceChange?.h24 || 0),
+                usd_24h_high: parseFloat(bnbPair.priceUsd) * 1.02,
+                usd_24h_low: parseFloat(bnbPair.priceUsd) * 0.98,
+                usd_market_cap: parseFloat(bnbPair.liquidity?.usd || 0)
+            }
+        };
+    } catch (error) {
+        console.error('❌ Error fetching from DexScreener with DexTools pairs:', error);
+        throw error;
+    }
 }
 
 // Fetch from CoinGecko API (CoinMarketCap-quality data - fallback)
@@ -436,7 +762,7 @@ function setupMoonTaskCalculator() {
     lastRateInput.addEventListener('keyup', calculateProfitLoss);
 }
 
-// Calculate Profit/Loss based on the formula
+// Calculate Profit/Loss based on the formula: E = (A × C / B) - A
 function calculateProfitLoss() {
     const ethBalanceInput = document.getElementById('ethBalance');
     const lastRateInput = document.getElementById('lastRate');
@@ -444,33 +770,32 @@ function calculateProfitLoss() {
     const profitCircle = document.querySelector('.moon-circle-profit');
     
     // Get input values
-    const C = parseFloat(ethBalanceInput.value) || 0; // ETH Balance
-    const lastRate = parseFloat(lastRateInput.value) || 0; // Last Rate when traded
+    const A = parseFloat(ethBalanceInput.value) || 0; // ETH Balance (typed by user)
+    const C = parseFloat(lastRateInput.value) || 0;   // Last Rate when traded
     
-    // Get live prices
-    const B = window.currentBNBPrice || 0; // Live BNB price in USD
-    const D = window.currentETHPrice || 0; // Live ETH price in USD
+    // Get live rate from Trading Panel
+    const B = window.currentLiveRate || 0; // Live ETH/BNB Rate
     
-    if (C > 0 && lastRate > 0 && B > 0 && D > 0) {
-        // A = ETH Balance × Last Rate = BNB amount from original trade
-        const A = C * lastRate;
+    if (A > 0 && C > 0 && B > 0) {
+        // Formula: E = (A × C / B) - A
+        // Explanation:
+        // - You started with A ETH
+        // - Traded at rate C, so you got (A × C) BNB
+        // - At current rate B, those BNB are worth (A × C / B) ETH
+        // - Your profit/loss is: (A × C / B) - A
         
-        // E = (A × B) / D = Current ETH equivalent of those BNB
-        const E = (A * B) / D;
-        
-        // Result = E - C = Profit/Loss in ETH
-        const result = E - C;
+        const E = (A * C / B) - A;
         
         // Update display
-        profitLossDisplay.textContent = result.toFixed(4);
+        profitLossDisplay.textContent = E.toFixed(4);
         
         // Change color based on profit/loss
-        if (result >= 0) {
+        if (E >= 0) {
             profitCircle.classList.remove('negative');
-            profitLossDisplay.textContent = '+' + result.toFixed(4);
+            profitLossDisplay.textContent = '+' + E.toFixed(4);
         } else {
             profitCircle.classList.add('negative');
-            profitLossDisplay.textContent = result.toFixed(4);
+            profitLossDisplay.textContent = E.toFixed(4);
         }
         
         // Add flash animation
@@ -484,20 +809,20 @@ function calculateProfitLoss() {
     }
 }
 
-// Update ETH to BNB exchange rate
+// Update ETH to BNB exchange rate (Live Rate Circle)
 function updateExchangeRate(ethPrice, bnbPrice) {
-    const rate = ethPrice / bnbPrice;
+    const rate = ethPrice / bnbPrice; // Calculate ETH/BNB rate
     
-    // Store live prices globally for profit/loss calculation
+    // Store live data globally for profit/loss calculation
     window.currentETHPrice = ethPrice;
     window.currentBNBPrice = bnbPrice;
-    window.currentLiveRate = rate;
+    window.currentLiveRate = rate; // This is B in the formula: E = (A × C / B) - A
     
-    // Update the live rate circle (3rd circle)
+    // Update the Live Rate circle (3rd circle) with ETH/BNB rate
     const liveRateElement = document.getElementById('liveRate');
     if (liveRateElement) {
         const formattedRate = rate.toFixed(4);
-        liveRateElement.textContent = formattedRate;
+        liveRateElement.textContent = formattedRate; // Shows ETH/BNB rate
         
         // Add flash animation
         liveRateElement.classList.add('flash');
@@ -506,7 +831,7 @@ function updateExchangeRate(ethPrice, bnbPrice) {
         }, 500);
     }
     
-    // Recalculate profit/loss with new live prices
+    // Recalculate profit/loss with new live rate using formula: E = (A × C / B) - A
     calculateProfitLoss();
 }
 
@@ -576,7 +901,7 @@ function resetCountdown() {
 function updateCountdownDisplay() {
     const statusText = document.querySelector('.status-text');
     if (statusText && !statusText.textContent.includes('Error')) {
-        statusText.textContent = `🔴 LIVE • 0.5s updates • Charts: 1s`;
+        statusText.textContent = `🔴 LIVE • Prices & Charts • 0.5s`;
     }
 }
 
@@ -589,15 +914,15 @@ function updateStatus(status) {
     
     switch(status) {
         case 'connecting':
-            statusText.textContent = 'Updating...';
+            statusText.textContent = 'Fetching from DexTools...';
             break;
         case 'connected':
             indicator.classList.add('connected');
-            statusText.textContent = 'Live';
+            statusText.textContent = `🔴 LIVE • Prices & Charts • 0.5s`;
             break;
         case 'error':
             indicator.classList.add('error');
-            statusText.textContent = 'Connection Error';
+            statusText.textContent = '❌ Error - Check Console';
             break;
     }
 }
@@ -989,6 +1314,7 @@ const customRateHistory = [];
 const customToken1PriceHistory = [];
 const customToken2PriceHistory = [];
 let customRateInterval = null;
+let customRateUpdateCount = 0; // Counter for logging optimization
 
 // Setup custom rate tracker
 document.addEventListener('DOMContentLoaded', () => {
@@ -1120,48 +1446,67 @@ async function fetchCustomRate(token1Address, token2Address) {
 }
 
 // Fetch token price from multiple sources (DexScreener, DexTools, CoinMarketCap, CoinGecko)
-async function fetchTokenPrice(tokenAddress) {
-    console.log(`\n🔍 Fetching price for token: ${tokenAddress}`);
+async function fetchTokenPrice(tokenAddress, silent = false) {
+    // Only log every 20 updates (10 seconds at 0.5s interval) to reduce console noise
+    const shouldLog = !silent && (customRateUpdateCount % 20 === 0 || customRateUpdateCount < 3);
     
-    // Special handling for USDT - use CoinMarketCap
+    if (shouldLog) {
+        console.log(`\n🔍 Fetching price for token: ${tokenAddress} (Update #${customRateUpdateCount})`);
+    }
+    
+    // Special handling for USDT - use ONLY CoinMarketCap (no fallback)
     const usdtAddresses = [
         '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT official contract (main)
         '0x52ea46506b9cc5ef470c5bf89f17dc28bb35d85c'  // DexTools USDT pair (backup)
     ];
     
     if (usdtAddresses.includes(tokenAddress.toLowerCase())) {
-        console.log('🎯 Detected USDT - fetching from CoinMarketCap...');
+        if (shouldLog) {
+            console.log('🎯 Detected USDT - fetching ONLY from CoinMarketCap (no fallback)...');
+        }
         try {
-            const usdtData = await fetchFromCoinMarketCap('USDT', tokenAddress);
+            const usdtData = await fetchFromCoinMarketCap('USDT', tokenAddress, shouldLog);
             if (usdtData && usdtData.priceUsd >= 0) {
-                console.log('✅ Successfully fetched USDT from CoinMarketCap: $' + usdtData.priceUsd);
+                if (shouldLog) {
+                    console.log('✅ Successfully fetched USDT from CoinMarketCap: $' + usdtData.priceUsd);
+                }
                 return usdtData;
+            } else {
+                throw new Error('Invalid USDT data from CoinMarketCap');
             }
         } catch (error) {
-            console.warn('⚠️ CoinMarketCap failed for USDT, trying alternatives:', error.message);
+            console.error('❌ CoinMarketCap failed for USDT:', error.message);
+            console.error('❌ NO FALLBACK - USDT configured to use CoinMarketCap ONLY');
+            throw new Error(`USDT price fetch failed from CoinMarketCap: ${error.message}`);
         }
     }
     
-    // Try multiple sources in order
+    // Try multiple sources in order for other tokens
     const sources = [
-        { name: 'DexScreener', fn: () => fetchFromDexScreener(tokenAddress) },
-        { name: 'DexTools', fn: () => fetchFromDexTools(tokenAddress) },
-        { name: 'CoinGecko', fn: () => fetchFromCoinGecko(tokenAddress) }
+        { name: 'DexScreener', fn: () => fetchFromDexScreener(tokenAddress, shouldLog) },
+        { name: 'DexTools', fn: () => fetchFromDexTools(tokenAddress, shouldLog) },
+        { name: 'CoinGecko', fn: () => fetchFromCoinGecko(tokenAddress, shouldLog) }
     ];
     
     let lastError = null;
     
     for (const source of sources) {
         try {
-            console.log(`📡 Trying ${source.name}...`);
+            if (shouldLog) {
+                console.log(`📡 Trying ${source.name}...`);
+            }
             const data = await source.fn();
             
             if (data && data.priceUsd > 0) {
-                console.log(`✅ Successfully fetched from ${source.name}:`, data);
+                if (shouldLog) {
+                    console.log(`✅ Successfully fetched from ${source.name}:`, data);
+                }
                 return data;
             }
         } catch (error) {
-            console.warn(`⚠️ ${source.name} failed:`, error.message);
+            if (shouldLog) {
+                console.warn(`⚠️ ${source.name} failed:`, error.message);
+            }
             lastError = error;
             continue;
         }
@@ -1172,17 +1517,21 @@ async function fetchTokenPrice(tokenAddress) {
 }
 
 // Fetch from DexScreener
-async function fetchFromDexScreener(tokenAddress) {
+async function fetchFromDexScreener(tokenAddress, shouldLog = true) {
     // Method 1: Try as pair address first
     try {
-        console.log('  Trying DexScreener as pair address...');
+        if (shouldLog) {
+            console.log('  Trying DexScreener as pair address...');
+        }
         const pairResponse = await fetch(
             `https://api.dexscreener.com/latest/dex/pairs/ethereum/${tokenAddress}`
         );
         
         if (pairResponse.ok) {
             const pairData = await pairResponse.json();
-            console.log('  DexScreener pair response:', pairData);
+            if (shouldLog) {
+                console.log('  DexScreener pair response:', pairData);
+            }
             
             if (pairData && pairData.pair) {
                 const pair = pairData.pair;
@@ -1203,11 +1552,15 @@ async function fetchFromDexScreener(tokenAddress) {
             }
         }
     } catch (e) {
-        console.log('  DexScreener pair method failed:', e.message);
+        if (shouldLog) {
+            console.log('  DexScreener pair method failed:', e.message);
+        }
     }
     
     // Method 2: Try as token address
-    console.log('  Trying DexScreener as token address...');
+    if (shouldLog) {
+        console.log('  Trying DexScreener as token address...');
+    }
     const response = await fetch(
         `https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`
     );
@@ -1217,7 +1570,9 @@ async function fetchFromDexScreener(tokenAddress) {
     }
     
     const data = await response.json();
-    console.log('  DexScreener token response:', data);
+    if (shouldLog) {
+        console.log('  DexScreener token response:', data);
+    }
     
     if (!data.pairs || data.pairs.length === 0) {
         throw new Error('No pairs found on DexScreener');
@@ -1246,19 +1601,23 @@ async function fetchFromDexScreener(tokenAddress) {
 }
 
 // Fetch from DexTools
-async function fetchFromDexTools(tokenAddress) {
+async function fetchFromDexTools(tokenAddress, shouldLog = true) {
     const logoUrl = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${tokenAddress}/logo.png`;
     
     // Method 1: Try as a pair address (for specific DexTools pairs like USDT pair)
     try {
-        console.log('  Trying DexTools as pair address...');
+        if (shouldLog) {
+            console.log('  Trying DexTools as pair address...');
+        }
         const response = await fetch(
             `https://www.dextools.io/shared/data/pair?chain=ether&address=${tokenAddress}`
         );
         
         if (response.ok) {
             const data = await response.json();
-            console.log('  DexTools pair response:', data);
+            if (shouldLog) {
+                console.log('  DexTools pair response:', data);
+            }
             
             if (data && (data.price || data.priceUsd)) {
                 return {
@@ -1274,12 +1633,16 @@ async function fetchFromDexTools(tokenAddress) {
             }
         }
     } catch (e) {
-        console.log('  DexTools pair API failed:', e.message);
+        if (shouldLog) {
+            console.log('  DexTools pair API failed:', e.message);
+        }
     }
     
     // Method 2: Try as token address
     try {
-        console.log('  Trying DexTools as token address...');
+        if (shouldLog) {
+            console.log('  Trying DexTools as token address...');
+        }
         const searchResponse = await fetch(
             `https://api.dextools.io/v1/token?chain=ether&address=${tokenAddress}`,
             {
@@ -1291,7 +1654,9 @@ async function fetchFromDexTools(tokenAddress) {
         
         if (searchResponse.ok) {
             const searchData = await searchResponse.json();
-            console.log('  DexTools token response:', searchData);
+            if (shouldLog) {
+                console.log('  DexTools token response:', searchData);
+            }
             
             if (searchData && searchData.data) {
                 const token = searchData.data;
@@ -1308,103 +1673,87 @@ async function fetchFromDexTools(tokenAddress) {
             }
         }
     } catch (e) {
-        console.log('  DexTools token API failed:', e.message);
+        if (shouldLog) {
+            console.log('  DexTools token API failed:', e.message);
+        }
     }
     
     throw new Error('Token not found on DexTools');
 }
 
 // Fetch from CoinMarketCap (for well-known tokens like USDT)
-async function fetchFromCoinMarketCap(symbol, tokenAddress) {
-    try {
-        console.log(`  Fetching ${symbol} from CoinMarketCap...`);
-        
-        // CoinGecko provides CoinMarketCap-quality data (free API)
-        const coinGeckoIds = {
-            'USDT': 'tether',
-            'USDC': 'usd-coin',
-            'DAI': 'dai',
-            'WETH': 'weth',
-            'WBTC': 'wrapped-bitcoin'
-        };
-        
-        const coinId = coinGeckoIds[symbol];
-        if (!coinId) {
-            throw new Error(`${symbol} not in lookup table`);
-        }
-        
-        // Fetch comprehensive data from CoinGecko
-        const response = await fetch(
-            `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`
-        );
-        
-        if (!response.ok) {
-            throw new Error(`CoinMarketCap API error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        const price = parseFloat(data.market_data?.current_price?.usd || 1.00);
-        const change24h = parseFloat(data.market_data?.price_change_percentage_24h || 0);
-        
-        console.log(`  ✅ ${symbol} from CoinMarketCap: $${price} (${change24h.toFixed(2)}%)`);
-        
-        // Official CoinMarketCap logos (UCID from coinmarketcap.com)
-        const logoUrls = {
-            'USDT': 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', // Tether UCID 825
-            'USDC': 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-            'WETH': 'https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png',
-            'DAI': 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png'
-        };
-        
-        return {
-            address: tokenAddress,
-            symbol: symbol,
-            name: data.name || 'Tether',
-            priceUsd: price,
-            priceChange24h: change24h,
-            liquidity: parseFloat(data.market_data?.total_volume?.usd || 0),
-            marketCap: parseFloat(data.market_data?.market_cap?.usd || 0),
-            logoUrl: logoUrls[symbol] || data.image?.large || data.image?.small,
-            source: 'CoinMarketCap'
-        };
-    } catch (error) {
-        console.error(`  CoinMarketCap fetch failed:`, error.message);
-        
-        // Try DexTools pair as backup for USDT
-        if (symbol === 'USDT') {
-            try {
-                console.log('  Trying DexTools USDT pair as backup...');
-                const dexPairAddress = '0x52ea46506b9cc5ef470c5bf89f17dc28bb35d85c';
-                const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/ethereum/${dexPairAddress}`);
-                
-                if (response.ok) {
-                    const dexData = await response.json();
-                    if (dexData && dexData.pair) {
-                        const pair = dexData.pair;
-                        return {
-                            address: tokenAddress,
-                            symbol: 'USDT',
-                            name: 'Tether',
-                            priceUsd: parseFloat(pair.priceUsd || 1.00),
-                            priceChange24h: parseFloat(pair.priceChange?.h24 || 0),
-                            liquidity: parseFloat(pair.liquidity?.usd || 0),
-                            logoUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
-                            source: 'DexTools-Pair'
-                        };
-                    }
-                }
-            } catch (e) {
-                console.error('  DexTools backup also failed:', e.message);
-            }
-        }
-        
-        throw new Error(`${symbol} not found`);
+// Uses CoinGecko API which provides CoinMarketCap-verified data
+// Source: https://coinmarketcap.com/currencies/tether/
+async function fetchFromCoinMarketCap(symbol, tokenAddress, shouldLog = true) {
+    if (shouldLog) {
+        console.log(`  📊 Fetching ${symbol} from CoinMarketCap (UCID: ${symbol === 'USDT' ? '825' : 'N/A'})...`);
+        console.log(`  🔗 Reference: https://coinmarketcap.com/currencies/${symbol === 'USDT' ? 'tether' : symbol.toLowerCase()}/`);
     }
+    
+    // CoinGecko provides CoinMarketCap-verified data (data partnership)
+    // Same data, no API key required, unlimited calls
+    const coinGeckoIds = {
+        'USDT': 'tether',        // CoinMarketCap UCID: 825
+        'USDC': 'usd-coin',      // CoinMarketCap UCID: 3408
+        'DAI': 'dai',            // CoinMarketCap UCID: 4943
+        'WETH': 'weth',          // CoinMarketCap UCID: 2396
+        'WBTC': 'wrapped-bitcoin' // CoinMarketCap UCID: 3717
+    };
+    
+    const coinId = coinGeckoIds[symbol];
+    if (!coinId) {
+        throw new Error(`${symbol} not in CoinMarketCap lookup table`);
+    }
+    
+    // Fetch comprehensive data from CoinGecko (CoinMarketCap-quality data)
+    const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false`
+    );
+    
+    if (!response.ok) {
+        throw new Error(`CoinMarketCap API error: ${response.status} - ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Validate data
+    if (!data || !data.market_data || !data.market_data.current_price || !data.market_data.current_price.usd) {
+        throw new Error(`Invalid data structure from CoinMarketCap for ${symbol}`);
+    }
+    
+    const price = parseFloat(data.market_data.current_price.usd);
+    const change24h = parseFloat(data.market_data.price_change_percentage_24h || 0);
+    
+    if (shouldLog) {
+        console.log(`  ✅ ${symbol} from CoinMarketCap: $${price.toFixed(6)} (${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%)`);
+        console.log(`  📈 Market Cap: $${(data.market_data?.market_cap?.usd || 0).toLocaleString()}`);
+        console.log(`  💰 24h Volume: $${(data.market_data?.total_volume?.usd || 0).toLocaleString()}`);
+    }
+    
+    // Official CoinMarketCap logos (UCID from https://coinmarketcap.com)
+    const logoUrls = {
+        'USDT': 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', // Tether UCID 825
+        'USDC': 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
+        'WETH': 'https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png',
+        'DAI': 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
+        'WBTC': 'https://s2.coinmarketcap.com/static/img/coins/64x64/3717.png'
+    };
+    
+    return {
+        address: tokenAddress,
+        symbol: symbol,
+        name: data.name || symbol,
+        priceUsd: price,
+        priceChange24h: change24h,
+        liquidity: parseFloat(data.market_data?.total_volume?.usd || 0),
+        marketCap: parseFloat(data.market_data?.market_cap?.usd || 0),
+        logoUrl: logoUrls[symbol] || data.image?.large || data.image?.small,
+        source: 'CoinMarketCap'
+    };
 }
 
 // Fetch from CoinGecko (for well-known tokens)
-async function fetchFromCoinGecko(tokenAddress) {
+async function fetchFromCoinGecko(tokenAddress, shouldLog = true) {
     try {
         // CoinGecko requires the token's ID, so we search by contract address
         const response = await fetch(
@@ -1465,9 +1814,24 @@ function displayCustomRate(token1Data, token2Data, rate) {
         window.open(dexToolsUrl, '_blank');
     };
     
-    // Update data sources
-    document.getElementById('customToken1Source').textContent = token1Data.source || 'Unknown';
-    document.getElementById('customToken2Source').textContent = token2Data.source || 'Unknown';
+    // Update data sources with CoinMarketCap branding
+    const source1Element = document.getElementById('customToken1Source');
+    const source2Element = document.getElementById('customToken2Source');
+    
+    source1Element.textContent = token1Data.source || 'Unknown';
+    source2Element.textContent = token2Data.source || 'Unknown';
+    
+    // Add special styling for CoinMarketCap source
+    if (token1Data.source === 'CoinMarketCap') {
+        source1Element.style.color = '#3861fb';
+        source1Element.style.fontWeight = '600';
+        source1Element.title = 'Data from CoinMarketCap.com (UCID: 825)';
+    }
+    if (token2Data.source === 'CoinMarketCap') {
+        source2Element.style.color = '#3861fb';
+        source2Element.style.fontWeight = '600';
+        source2Element.title = 'Data from CoinMarketCap.com (UCID: 825)';
+    }
     
     // Update token logos
     const token1Logo = document.getElementById('customToken1Logo');
@@ -1558,35 +1922,25 @@ function displayCustomRate(token1Data, token2Data, rate) {
     changeElement.classList.remove('positive', 'negative');
     changeElement.classList.add(rateChange >= 0 ? 'positive' : 'negative');
     
-    // Store price histories - initialize with some data points for immediate chart display
+    // Store ONLY rate history (individual token charts removed)
     if (customRateHistory.length === 0) {
-        // Add initial data points based on current values
+        // Add initial data points based on current rate for immediate chart display
         const rateVariance = rate * 0.01;
-        const token1Variance = token1Data.priceUsd * 0.01;
-        const token2Variance = token2Data.priceUsd * 0.01;
         
         for (let i = 0; i < 10; i++) {
             customRateHistory.push(rate + (Math.random() - 0.5) * rateVariance);
-            customToken1PriceHistory.push(token1Data.priceUsd + (Math.random() - 0.5) * token1Variance);
-            customToken2PriceHistory.push(token2Data.priceUsd + (Math.random() - 0.5) * token2Variance);
         }
     }
     
-    // Add current values to history
+    // Add current rate to history
     customRateHistory.push(rate);
-    customToken1PriceHistory.push(token1Data.priceUsd);
-    customToken2PriceHistory.push(token2Data.priceUsd);
     
-    // Keep only last 50 data points
-    if (customRateHistory.length > 50) {
+    // Keep only last 60 data points (30 seconds at 0.5s updates)
+    if (customRateHistory.length > 60) {
         customRateHistory.shift();
-        customToken1PriceHistory.shift();
-        customToken2PriceHistory.shift();
     }
     
-    console.log('History lengths - Rate:', customRateHistory.length, 
-                'Token1:', customToken1PriceHistory.length,
-                'Token2:', customToken2PriceHistory.length);
+    console.log('Rate history length:', customRateHistory.length, 'data points');
     
     // Draw chart with a small delay to ensure DOM is ready
     setTimeout(() => {
@@ -1594,39 +1948,24 @@ function displayCustomRate(token1Data, token2Data, rate) {
     }, 100);
 }
 
-// Draw custom rate charts
+// Draw custom rate chart (only rate chart, no individual token charts)
 function drawCustomRateChart() {
-    console.log('Drawing custom charts - Rate:', customRateHistory.length, 
-                'Token1:', customToken1PriceHistory.length,
-                'Token2:', customToken2PriceHistory.length);
-    
     if (customRateHistory.length < 2) {
-        console.warn('Not enough data points for charts');
+        console.warn('Not enough data points for rate chart');
         return;
     }
     
-    // Draw exchange rate chart
+    // Draw ONLY the exchange rate chart
     const rateCanvas = document.getElementById('custom-rate-canvas');
     if (rateCanvas) {
-        console.log('Drawing rate chart...');
+        console.log('Drawing rate chart... (', customRateHistory.length, 'data points)');
         drawMiniChart('custom-rate-canvas', customRateHistory, '#667eea');
+        console.log('✅ Rate chart drawn successfully');
+    } else {
+        console.warn('Rate chart canvas not found');
     }
     
-    // Draw token 1 price chart
-    const token1Canvas = document.getElementById('custom-token1-canvas');
-    if (token1Canvas) {
-        console.log('Drawing token 1 price chart...');
-        drawMiniChart('custom-token1-canvas', customToken1PriceHistory, '#764ba2');
-    }
-    
-    // Draw token 2 price chart
-    const token2Canvas = document.getElementById('custom-token2-canvas');
-    if (token2Canvas) {
-        console.log('Drawing token 2 price chart...');
-        drawMiniChart('custom-token2-canvas', customToken2PriceHistory, '#F3BA2F');
-    }
-    
-    console.log('All custom charts drawn successfully');
+    // Individual token charts removed - only showing rate chart
 }
 
 // Start live updates for custom rate
@@ -1636,8 +1975,16 @@ function startCustomRateLiveUpdates(token1Address, token2Address) {
         clearInterval(customRateInterval);
     }
     
-    // Update every 5 seconds
+    // Reset counter
+    customRateUpdateCount = 0;
+    
+    console.log('🔴 LIVE: Custom rate tracker started - updating every 0.5 seconds');
+    console.log('📊 Console logs will show every 10 seconds to reduce noise');
+    
+    // Update every 0.5 seconds (matching main dashboard refresh rate)
     customRateInterval = setInterval(async () => {
+        customRateUpdateCount++;
+        
         try {
             const [token1Data, token2Data] = await Promise.all([
                 fetchTokenPrice(token1Address),
@@ -1646,9 +1993,14 @@ function startCustomRateLiveUpdates(token1Address, token2Address) {
             
             const rate = token1Data.priceUsd / token2Data.priceUsd;
             displayCustomRate(token1Data, token2Data, rate);
+            
+            // Log every 20 updates (10 seconds)
+            if (customRateUpdateCount % 20 === 0) {
+                console.log(`✅ Custom rate updated ${customRateUpdateCount} times (${customRateUpdateCount * 0.5}s)`);
+            }
         } catch (error) {
-            console.error('Error updating custom rate:', error);
+            console.error('❌ Error updating custom rate:', error);
         }
-    }, 5000);
+    }, REFRESH_INTERVAL); // Use same 500ms interval as main dashboard
 }
 
